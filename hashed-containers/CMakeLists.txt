@@ -9,10 +9,13 @@ project(${PROJECT_NAME_STR})
 #----------------------------------------
 aux_source_directory(. SRC_LIST)
 
+find_package(Boost REQUIRED)
+
 # Headers
 file(GLOB HEADERS_LIST "*.h" "*.hpp")
 add_executable(${PROJECT_NAME} ${SRC_LIST} ${HEADERS_LIST})
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_14)
+target_link_libraries(${PROJECT_NAME} Boost::boost)
 
 #----------------------------------------
 # Tests
