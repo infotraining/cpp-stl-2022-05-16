@@ -19,6 +19,7 @@ _[Bb]uild/
 [Oo]bj/
 wsl-build/
 build-wsl/
+[Bb]uild-*/
 
 # MSTest test Results
 [Tt]est[Rr]esult*/

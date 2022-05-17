@@ -426,3 +426,15 @@ TEST_CASE("special operations for list")
     helpers::print(lst1, "lst1 after splice");
     helpers::print(lst2, "lst2 after splice");
 }
+
+
+TEST_CASE("reverse iterators")
+{
+    std::vector<int> vec = {1, 2, 3, 4, 5};
+
+    for(auto it = vec.rbegin(); it != vec.rend(); ++it)
+    {
+        std::cout << *it << " ";
+    }
+    std::cout << "\n";
+}

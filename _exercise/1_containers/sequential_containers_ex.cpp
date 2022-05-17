@@ -29,6 +29,34 @@ namespace LegacyCode
     }
 }
 
+namespace Explain
+{
+
+    template <typename TContainer>
+    typename TContainer::iterator begin(TContainer& container)
+    {
+        return container.begin();
+    }
+
+    template <typename TContainer>
+    typename TContainer::iterator end(TContainer& container)
+    {
+        return container.end();
+    }
+
+    template <typename T, size_t N>
+    T* begin(T(&tab)[N])
+    {
+        return tab;
+    }
+
+    template <typename T, size_t N>
+    T* end(T(&tab)[N])
+    {
+        return tab + N;
+    }
+}
+
 TEST_CASE("Exercises")
 {
     using namespace std;
@@ -42,26 +70,30 @@ TEST_CASE("Exercises")
     std::mt19937_64 rnd{665};
     std::uniform_int_distribution<> distr{0, 20};
 
-    for (int i = 0; i < 100; ++i)
-        data[i] = distr(rnd);
+//    for (int i = 0; i < 100; ++i)
+//        data[i] = distr(rnd);
+    std::generate(std::begin(data), std::end(data), [&]{ return distr(rnd); });
 
     SECTION("create a vector containing copy of all elements from data")
     {
-        // TODO
-        std::vector<int> vec;
+        std::vector<int> vec(std::begin(data), std::end(data));
+
+        // 1. for with push_backs
+        // 2. insert with iterators
+        // vec.insert(vec.end(), std::begin(data), std::end(data));
 
         REQUIRE(equal(begin(data), end(data), vec.begin(), vec.end()));
 
         SECTION("create a copy of a vector")
         {
-            // TODO
-            std::vector<int> vec2;
+            std::vector<int> vec2 = vec;
 
             REQUIRE_THAT(vec, Equals(vec2));
 
             SECTION("clear all items from vec2 and free a memory")
             {
-                // TODO
+                vec2.clear();
+                vec2.shrink_to_fit();
 
                 REQUIRE(vec2.size() == 0);
                 REQUIRE(vec2.capacity() == 0);
@@ -71,7 +103,7 @@ TEST_CASE("Exercises")
         SECTION("calculate average for a vec using legacy code")
         {
             // TODO
-            double avg{};
+            double avg = LegacyCode::avg(vec.data(), vec.size());
 
             REQUIRE(avg == Approx(9.45));
         }
@@ -80,7 +112,7 @@ TEST_CASE("Exercises")
 
         SECTION("append tail to vec")
         {
-            // TODO
+            vec.insert(vec.end(), std::begin(tail), std::end(tail));
 
             REQUIRE(equal(vec.end() - 5, vec.end(), begin(tail), end(tail)));
         }
@@ -89,8 +121,15 @@ TEST_CASE("Exercises")
         {
             sort(vec.begin(), vec.end());
 
-            // TODO
-            vector<int> reversed_vec;
+            vector<int> reversed_vec(vec.rbegin(), vec.rend());
+
+//            for(auto it = vec.rbegin(); it != vec.rend(); it++)
+//            {
+//                reversed_vec.push_back(*it);
+//            }
+
+//            vector<int> reversed_vec = vec;
+//            std::reverse(reversed_vec.begin(), reversed_vec.end());
 
             REQUIRE(equal(reversed_vec.begin(), reversed_vec.end(), vec.rbegin(), vec.rend()));
         }
@@ -98,20 +137,21 @@ TEST_CASE("Exercises")
         SECTION("create a list from vector")
         {
             // TODO
-            list<int> numbers;
+            list<int> numbers(vec.begin(), vec.end());
 
             REQUIRE(equal(vec.begin(), vec.end(), numbers.begin()));
 
             SECTION("remove duplicates from numbers")
             {
-                // TODO
+                numbers.sort();
+                numbers.unique();
 
                 REQUIRE(adjacent_find(numbers.begin(), numbers.end()) == numbers.end());
             }
 
             SECTION("remove evens from a list")
             {
-                // TODO
+                numbers.remove_if(&LegacyCode::is_even);
 
                 REQUIRE(all_of(numbers.begin(), numbers.end(), [](int x) { return x % 2; }));
             }
@@ -120,7 +160,18 @@ TEST_CASE("Exercises")
             {
                 list<int> evens;
 
-                // TODO
+                for(auto it = numbers.begin(); it != numbers.end(); )
+                {
+                    if (LegacyCode::is_even(*it))
+                    {
+                        auto node_to_move = it;
+                        ++it;
+                        evens.splice(evens.end(), numbers, node_to_move);
+                        continue;
+                    }
+
+                    ++it;
+                }
 
                 REQUIRE(all_of(numbers.begin(), numbers.end(), [](int x) { return x % 2; }));
                 REQUIRE(all_of(evens.begin(), evens.end(), [](int x) { return x % 2 == 0; }));
