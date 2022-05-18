@@ -261,5 +261,5 @@ TEST_CASE("iota")
         std::accumulate(words.begin(), words.end(), 0,
             [](int total, const std::string& str) { return total + str.size(); });
 
-    std::cout << "total length" << total_length << "\n";
+    std::cout << "total length: " << total_length << "\n";
 }

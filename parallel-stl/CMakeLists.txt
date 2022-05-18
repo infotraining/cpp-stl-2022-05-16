@@ -20,8 +20,6 @@ find_package(Threads REQUIRED)
 find_package(TBB CONFIG REQUIRED)
 
 
-
-
 # Headers
 file(GLOB HEADERS_LIST "*.h" "*.hpp")
 add_executable(${PROJECT_NAME} ${SRC_LIST} ${HEADERS_LIST})
