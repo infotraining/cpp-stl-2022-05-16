@@ -16,13 +16,16 @@ using namespace std;
 
 std::vector<std::string> load_words(std::istream& in)
 {
-    std::vector<std::string> words;
+    std::istream_iterator<std::string> file_start(in);
+    std::istream_iterator<std::string> file_end;
 
-    std::string word;
-    while(in >> word)
-    {
-        words.push_back(word);
-    }
+    std::vector<std::string> words(file_start, file_end);
+
+//    std::string word;
+//    while(in >> word)
+//    {
+//        words.push_back(word);
+//    }
 
     return words;
 }
@@ -59,7 +62,9 @@ int main()
         return rating;
     };
 
+
     auto words = load_words(fin);
+
 
     auto t_start = std::chrono::high_resolution_clock::now();
 
@@ -74,4 +79,5 @@ int main()
     {
         std::cout << it->second << " - " << it->first << "\n";
     }
+
 }
