@@ -53,11 +53,22 @@ int main()
         return concordance;
     };
 
+
     auto make_rating = [](const auto& concordance) {
         std::multimap<int, std::string, std::greater<>> rating;
 
         for(const auto& kv : concordance)
             rating.emplace(kv.second, kv.first);
+
+        return rating;
+    };
+
+    auto make_rating_alt = [](const auto& concordance) {
+
+        std::vector<std::pair<std::string, int>> rating(10);
+
+        std::partial_sort_copy(concordance.begin(), concordance.end(),
+            rating.begin(), rating.end(), [](const auto& p1, const auto& p2) { return p1.second > p2.second; });
 
         return rating;
     };
@@ -68,7 +79,7 @@ int main()
 
     auto t_start = std::chrono::high_resolution_clock::now();
 
-    auto rating = make_rating(make_concordance(words));
+    auto rating = make_rating_alt(make_concordance(words));
 
     auto t_end = std::chrono::high_resolution_clock::now();
 
